@@ -6,7 +6,7 @@ saida = open("saida.js", "w")
 
 tabs = 0
 tabsContados = 0
-palavrasChave = ["<",">", "in", "range", "/", "-", "+", "*", "if", "else", "elif", "while", "for", "print", "int(", "str(", "float(", "input(", "range(", ":", "and", "or"]
+palavrasChave = ['%', "<",">", "in", "range", "/", "-", "+", "*", "if", "else", "elif", "while", 'for', "print", "int(", "str(", "float(", "input(", "range(", ":", "and", "or", "console"]
 palavras = []
 variaveis_declaradas = []
 
@@ -31,7 +31,7 @@ for linha in entrada:
         tabs += 1
         saida.write(linha)
     
-    elif "if" in linha:
+    if "if" in linha:
         if "and" in linha:
             linha = linha.replace("and", "&&")
         elif "or" in linha:
@@ -41,31 +41,31 @@ for linha in entrada:
         tabs += 1
         saida.write(linha)
     
-    elif "else" in linha:
+    if "else" in linha:
         linha = linha.replace("else:", "else {")
         tabs += 1
         saida.write(linha)
 
-    elif "elif" in linha:
+    if "elif" in linha:
         linha = linha.replace(":", ") {")
         linha = linha.replace("elif", "else if (")
         tabs += 1
         saida.write(linha)
 
-    elif "print" in linha:
+    if "print" in linha:
         linha = linha.replace("print", "console.log")
         saida.write(linha)
 
-    elif "int(" in linha:
+    if "int(" in linha:
         linha = linha.replace("int(", "parseInt(")
-    elif "str(" in linha:
+    if "str(" in linha:
         linha = linha.replace("str(", "String(")
-    elif "float(" in linha:
+    if "float(" in linha:
         linha = linha.replace("float(", "parseFloat(")
-    elif "input(" in linha:
+    if "input(" in linha:
         linha = linha.replace("input(", "prompt(")
 
-    elif "for" in linha:
+    if "for" in linha:
         tabs += 1
         palavras = linha.split(" ")
         palavras = list(filter(lambda a: a != "", palavras))
@@ -76,24 +76,37 @@ for linha in entrada:
         linha = ('\t' * (tabs-1)) + linha
         saida.write(linha)
 
-    elif "=" in linha:
+    if '=' in linha:
         palavrasDaLinha = linha.split(" ")
         palavrasDaLinha = list(filter(lambda a: a != "", palavrasDaLinha))
         variavel = palavrasDaLinha[0]
+        flag = True
+        variavel = variavel.strip()
 
-        for palavra in palavrasDaLinha:
-            if palavra in palavrasChave:
-                break
         if variavel not in variaveis_declaradas:
-            variaveis_declaradas.append(variavel)
-            novaLinha =  ('\t' * tabs) + f"var {variavel} = " + " ".join(palavrasDaLinha[2:])
-            saida.write(novaLinha)
 
-    
+            for pl in palavrasDaLinha:
+                if pl in palavrasChave:
+                    flag = False
+            
+            for vd in variaveis_declaradas:
+                for pc in palavrasChave:
+                    if pc in vd or pc in vd:
+                        flag = False
+
+            if flag:
+                variaveis_declaradas.append(variavel)
+                novaLinha =  ('\t' * tabs) + f"var {variavel} = " + " ".join(palavrasDaLinha[2:])
+                saida.write(novaLinha)
+        else:
+            saida.write(linha)
+            
+        
+                
 saida.write('\n')
 while tabs > 0:
     tabs -= 1
     saida.write('\t' * tabs + '}\n')
-    
+
 entrada.close()
 saida.close()

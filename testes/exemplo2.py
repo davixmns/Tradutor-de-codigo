@@ -7,7 +7,7 @@ else:
     fatorial = 1
     while numero > 0:
         print(fatorial)
-        fatorial *= numero
+        fatorial % numero
         numero -= 1
         if numero > 0 and numero < 10:
             print("x")
