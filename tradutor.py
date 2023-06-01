@@ -101,8 +101,7 @@ for linha in entrada:
         else:
             saida.write(linha)
             
-        
-                
+                 
 saida.write('\n')
 while tabs > 0:
     tabs -= 1
